@@ -40,6 +40,11 @@ NLP/
 ```
 
 ### How to run 
+#### Dependencies
+Please make sure you have the required dependencies installed. To do so, simply run the following command in your environnement : 
+```batch
+pip install -r requirements.txt
+```
 #### Data scraping
 One can scrap data from the web simply by running the file `economic_articles_scraper.py`. Adding url is possible and we automatically combine the new texts with the old database.
 
