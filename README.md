@@ -36,7 +36,10 @@ NLP/
 ├── economic_articles/  # contains the webscraper and AI texts generator
 │   ├── economic_articles_scraper.py  # webscraping of economic texts        
 │   └── IA_generator.py
-    └── process_dataset.py        
+    └── process_dataset.py
+├── Baseline_models/  # contains the svm, rf, lr models  
+│   └── Baseline.py
+    └── best_rf/svm/lr   # To avoid training the model several times 
 ```
 
 ### How to run 
@@ -49,8 +52,10 @@ pip install -r requirements.txt
 One can scrap data from the web simply by running the file `economic_articles_scraper.py`. Adding url is possible and we automatically combine the new texts with the old database.
 
 #### AI generator
+Generating IA texts thanks to Groq API
 
-#### SVM
+#### Baseline_models
+Contains the analysis of the 3 baseline models : SVM, random forest and Logistic Regression
 
 #### BERT and DistilBERT 
 Both are organized the same way : 
@@ -61,11 +66,6 @@ Both are organized the same way :
 Please note that the file `DistilBERT_truncated.py` is independant and can be run separately.
 ![Console Output](docs/other/BERT_code_structure.png)
 
+## Conclusion 
+For details on the code, the concepts used, and the conclusions, please refer to the report.
 
-## Maybe somethings about the code itself ? Like what it does etc but we already have that in the repoert
-1) Data scraping
-
-   
-To generate real data, we used a web scraper. It collects economic and financial news articles from multiple English and French sources using their RSS feeds (e.g., BBC, Bloomberg, Les Échos, La Tribune). For each article, the scraper follows the link, extracts the main text content with the help of BeautifulSoup, and applies filters to remove advertisements, navigation menus, and irrelevant elements. It also enforces a minimum word count (e.g., 120 words) and avoids duplicate articles.
-
-To generate synthetic AI data, we used an asynchronous text generation pipeline. It reads economic topics from a real dataset (data that we scrapped) and rapidly generates AI-written texts using the Groq API and the LLaMA 3.1 8B instant model. The generator builds prompts in French or English, optionally formatted as economic speeches or articles, and sends them concurrently (up to 25 simultaneous requests) to maximize speed.
