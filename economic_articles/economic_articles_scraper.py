@@ -14,7 +14,7 @@ class EconomicScraper:
     
     def __init__(self, 
                  database_filename="database_economic_articles.json",
-                 min_words=120,  # Lowered from 150
+                 min_words=120, 
                  max_articles_per_source=30,
                  data_folder="economic_articles"):
         """
@@ -28,7 +28,6 @@ class EconomicScraper:
         
         # Working sources based on diagnostic results
         self.sources = [
-            # EXISTING WORKING SOURCES
             {
                 'name': 'Economist-Finance',
                 'rss': 'https://www.economist.com/finance-and-economics/rss.xml',
@@ -52,7 +51,6 @@ class EconomicScraper:
                 'language': 'English'
             },
             
-            # FIXED CNBC
             {
                 'name': 'CNBC-Economy-Fixed',
                 'rss': 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069',
@@ -61,8 +59,7 @@ class EconomicScraper:
                 'language': 'English',
                 'special_handler': 'cnbc'
             },
-            
-            # NEW WORKING SOURCES
+
             {
                 'name': 'BBC-Business',
                 'rss': 'http://feeds.bbci.co.uk/news/business/rss.xml',
@@ -93,7 +90,6 @@ class EconomicScraper:
             }
         ]
         
-        # Add French sources
         self._add_french_sources()
         
         self.headers = {
@@ -105,7 +101,9 @@ class EconomicScraper:
         }
     
     def _add_french_sources(self):
-        """Add French economic sources"""
+        """
+        Add specific French economic sources
+        """
         french_sources = [
             {
                 'name': 'LesEchos-Economie',
@@ -154,7 +152,9 @@ class EconomicScraper:
         self.sources.extend(french_sources)
     
     def test_french_sources(self):
-        """Test French sources availability"""
+        """
+        Test French sources availability
+        """
         print("TESTING FRENCH ECONOMIC SOURCES")
         print("=" * 40)
         
@@ -190,7 +190,9 @@ class EconomicScraper:
         return working_french
     
     def scrape_cnbc_article(self, url):
-        """Special handler for CNBC articles"""
+        """
+        Special handler for CNBC articles
+        """
         try:
             response = requests.get(url, headers=self.headers, timeout=20)
             if response.status_code != 200:
@@ -198,14 +200,13 @@ class EconomicScraper:
             
             soup = BeautifulSoup(response.text, 'html.parser')
             
-            # Remove unwanted elements more aggressively
+            # Remove unwanted elements 
             for unwanted in soup.select('script, style, nav, footer, aside, .ad, .advertisement, .social-share'):
                 unwanted.decompose()
             
             # CNBC-specific approach
             content_text = ""
             
-            # Try CNBC-specific selectors first
             cnbc_selectors = [
                 '.ArticleBody-articleBody',
                 '.InlineContent-container', 
@@ -220,7 +221,7 @@ class EconomicScraper:
                     if len(text) > len(content_text):
                         content_text = text
             
-            # If still not enough content, try a more aggressive approach
+            # more aggressive approach if still not enough
             if len(content_text.split()) < 100:
                 # Get all divs with substantial content
                 all_divs = soup.find_all('div')
@@ -306,7 +307,9 @@ class EconomicScraper:
             return None
     
     def scrape_from_source(self, source):
-        """Scrape articles from a single source with improved error handling"""
+        """
+        Scrape articles from a single source with improved error handling
+        """
         print(f"\\n{source['name']} ({source.get('language', 'Unknown')})...")
         articles = []
         
@@ -371,7 +374,7 @@ class EconomicScraper:
                 else:
                     print(f"      SKIP: No content extracted")
                 
-                time.sleep(1.0)  # Slightly faster but still respectful
+                time.sleep(1.0) 
                 
         except Exception as e:
             print(f"   ERROR with source {source['name']}: {str(e)[:50]}...")
@@ -380,7 +383,9 @@ class EconomicScraper:
         return articles
     
     def load_database(self):
-        """Load existing database"""
+        """
+        Load existing database
+        """
         try:
             with open(self.database_path, "r", encoding="utf-8") as f:
                 database = json.load(f)
@@ -392,7 +397,9 @@ class EconomicScraper:
             return []
     
     def save_database(self, articles):
-        """Save database with enhanced metadata"""
+        """
+        Save database with enhanced metadata
+        """
         seen_urls = set()
         unique_articles = []
         
@@ -427,7 +434,9 @@ class EconomicScraper:
         return database_info
     
     def update_database(self):
-        """Main method with improved progress tracking"""
+        """
+        Main method with improved progress tracking
+        """
         print("IMPROVED ECONOMIC ARTICLES SCRAPER")
         print("=" * 60)
         print(f"Database: {self.database_path}")
@@ -524,9 +533,6 @@ if __name__ == "__main__":
         database = scraper.update_database()
         
         final_count = database['metadata']['total_articles']
-        if final_count >= 250:
-            print(f"\\nEXCELLENT! {final_count} articles - Ready for ML training!")
-        else:
-            print(f"\\n{final_count} articles collected. Consider adjusting parameters for more.")
+        print(f"\\n{final_count} articles collected.")
     else:
         print("Scraping cancelled.")
